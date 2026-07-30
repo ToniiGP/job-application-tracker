@@ -1,12 +1,20 @@
 from fastapi import FastAPI
-
 from app.database import test_database_connection
+import app.models
+from app.database import create_database
+from app.routers.applications import router as applications_router
+
 
 app = FastAPI(
     title="Job Application Tracker API",
     description="API for managing job applications.",
     version="0.1.0",
 )
+
+create_database()
+
+app.include_router(applications_router)
+
 
 @app.get("/")
 def read_root() -> dict[str, str]: 
