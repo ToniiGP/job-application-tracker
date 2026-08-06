@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db 
 from app.models import Application
-from app.schemas import ApplicationCreate, ApplicationResponse
+from app.schemas import ApplicationCreate, ApplicationResponse, ApplicationUpdate 
 
 router = APIRouter(
     prefix="/applications",
@@ -51,4 +51,29 @@ def get_application(
             status_code=404,
             detail="Application not found", 
         )
+    return application
+
+
+@router.patch("/{application_id}", response_model=ApplicationResponse)
+def update_application(
+    application_id: int,
+    application_data: ApplicationUpdate,
+    db: Session = Depends(get_db),
+):
+    application = db.get(Application, application_id)
+    
+    if application is None: 
+            raise HTTPException(
+                status_code=404,
+                detail="Application not found", 
+            )
+    
+    updates = application_data.model_dump(exclude_unset=True)
+    
+    for field, value in updates.items():
+        setattr(application, field, value)
+        
+    db.commit()
+    db.refresh(application)
+
     return application

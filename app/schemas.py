@@ -27,4 +27,15 @@ class ApplicationResponse(BaseModel):
     created_at: datetime
     
     model_config = ConfigDict(from_attributes=True) 
+
+
+class ApplicationUpdate(BaseModel): 
+    company_name: str | None = None 
+    job_title: str | None = None 
+    status: ApplicationStatus | None = None 
+    location: str | None = None 
+    job_url: str | None = None
+    date_applied: date | None = None 
+    notes: str | None = None 
+
     
