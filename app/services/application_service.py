@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 
 from app.models import Application
-from app.schemas import ApplicationCreate, ApplicationUpdate
+from app.schemas import ApplicationCreate, ApplicationUpdate, ApplicationStatus
 
 def create_application(
     db: Session,
@@ -20,12 +20,20 @@ def create_application(
 
 def get_applications(
     db: Session,
+    status: ApplicationStatus | None = None 
 ) -> list[Application]:
-    statement = (
-    select(Application)
-    .order_by(Application.company_name)
+    
+    statement = select(Application)
+
+    if status is not None:
+        statement = statement.where(
+            Application.status == status
+        )
+
+    statement = statement.order_by(
+        Application.company_name
     )
-        
+
     result = db.execute(statement)
     return result.scalars().all()
 
