@@ -5,7 +5,7 @@ from app.services import application_service
 
 from app.database import get_db 
 from app.models import Application
-from app.schemas import ApplicationCreate, ApplicationResponse, ApplicationUpdate 
+from app.schemas import ApplicationCreate, ApplicationResponse, ApplicationUpdate, ApplicationStatus
 
 router = APIRouter(
     prefix="/applications",
@@ -27,8 +27,11 @@ def create_application(
 @router.get("/", response_model= list[ApplicationResponse])
 def get_applications(
     db: Session = Depends(get_db),
+    status: ApplicationStatus | None = None,
+    company: str | None = None,
+    job_title: str | None = None, 
 ): 
-   return application_service.get_applications(db)
+   return application_service.get_applications(db, status=status, company=company, job_title=job_title)
 
 
 @router.get("/{application_id}", response_model= ApplicationResponse)
