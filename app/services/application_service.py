@@ -20,7 +20,9 @@ def create_application(
 
 def get_applications(
     db: Session,
-    status: ApplicationStatus | None = None 
+    status: ApplicationStatus | None = None,
+    company: str | None = None, 
+    job_title: str | None = None,
 ) -> list[Application]:
     
     statement = select(Application)
@@ -28,6 +30,16 @@ def get_applications(
     if status is not None:
         statement = statement.where(
             Application.status == status
+        )
+    
+    if company is not None:
+        statement = statement.where(
+        Application.company_name.ilike(f"%{company}%")
+    )
+        
+    if job_title is not None: 
+        statement = statement.where(
+            Application.job_title.ilike(f"%{job_title}%")
         )
 
     statement = statement.order_by(

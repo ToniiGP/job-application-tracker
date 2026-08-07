@@ -28,8 +28,10 @@ def create_application(
 def get_applications(
     db: Session = Depends(get_db),
     status: ApplicationStatus | None = None,
+    company: str | None = None,
+    job_title: str | None = None, 
 ): 
-   return application_service.get_applications(db, status=status)
+   return application_service.get_applications(db, status=status, company=company, job_title=job_title)
 
 
 @router.get("/{application_id}", response_model= ApplicationResponse)
