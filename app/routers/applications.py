@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session 
+from app.services import application_service
 
 from app.database import get_db 
 from app.models import Application
@@ -17,26 +18,17 @@ def create_application(
     application_data: ApplicationCreate,
     db: Session = Depends(get_db),
 ):
-    application = Application(**application_data.model_dump())
-
-    db.add(application)
-    db.commit()
-    db.refresh(application)
-
-    return application
+    return application_service.create_application(
+        db,
+        application_data,
+    )
 
 
 @router.get("/", response_model= list[ApplicationResponse])
 def get_applications(
     db: Session = Depends(get_db),
 ): 
-    statement = (
-     select(Application)
-     .order_by(Application.company_name)
-     )
-    
-    result = db.execute(statement)
-    return result.scalars().all()
+   return application_service.get_applications(db)
 
 
 @router.get("/{application_id}", response_model= ApplicationResponse)
@@ -44,13 +36,17 @@ def get_application(
     application_id: int,
     db: Session = Depends(get_db),
 ): 
-    application = db.get(Application, application_id)
-    
-    if application is None: 
+    application = application_service.get_application(
+        db,
+        application_id,
+    )
+
+    if application is None:
         raise HTTPException(
             status_code=404,
-            detail="Application not found", 
+            detail="Application not found",
         )
+
     return application
 
 
@@ -60,21 +56,17 @@ def update_application(
     application_data: ApplicationUpdate,
     db: Session = Depends(get_db),
 ):
-    application = db.get(Application, application_id)
-    
-    if application is None: 
-            raise HTTPException(
-                status_code=404,
-                detail="Application not found", 
-            )
-    
-    updates = application_data.model_dump(exclude_unset=True)
-    
-    for field, value in updates.items():
-        setattr(application, field, value)
-        
-    db.commit()
-    db.refresh(application)
+    application = application_service.update_application(
+        db,
+        application_id,
+        application_data,
+    )
+
+    if application is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Application not found",
+        )
 
     return application
 
@@ -84,15 +76,15 @@ def delete_application(
     application_id: int,
     db: Session = Depends(get_db),
 ):
-    application = db.get(Application, application_id)
+    deleted = application_service.delete_application(
+        db,
+        application_id,
+    )
 
-    if application is None:
+    if not deleted:
         raise HTTPException(
             status_code=404,
             detail="Application not found",
         )
 
-    # Delete and save changes here
-    db.delete(application)
-    db.commit()
     return {"message": "Application deleted successfully"}
