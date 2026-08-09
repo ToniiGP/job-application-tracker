@@ -23,6 +23,8 @@ def get_applications(
     status: ApplicationStatus | None = None,
     company: str | None = None, 
     job_title: str | None = None,
+    page: int = 1, 
+    page_size: int = 20, 
 ) -> list[Application]:
     
     statement = select(Application)
@@ -45,6 +47,11 @@ def get_applications(
     statement = statement.order_by(
         Application.company_name
     )
+    
+    offset = (page - 1) * page_size
+
+    statement = statement.offset(offset).limit(page_size)
+
 
     result = db.execute(statement)
     return result.scalars().all()
