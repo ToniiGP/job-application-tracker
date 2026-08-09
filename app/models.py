@@ -39,3 +39,15 @@ class Application(Base):
         default=datetime.utcnow,
         nullable=False,
     )
+    
+class User(Base): 
+    __tablename__ = "users"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+            DateTime,
+            default=datetime.utcnow,
+            nullable=False,
+        )
