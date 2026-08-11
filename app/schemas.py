@@ -37,5 +37,21 @@ class ApplicationUpdate(BaseModel):
     job_url: str | None = None
     date_applied: date | None = None 
     notes: str | None = None 
+    
+class UserCreate(BaseModel): 
+    email: str 
+    username: str 
+    password: str 
+    
+
+class UserResponse(BaseModel): 
+    id: int 
+    email: str 
+    username: str 
+    created_at: datetime
+    
+class UserLogin(BaseModel): 
+    email: str 
+    password: str 
 
     
