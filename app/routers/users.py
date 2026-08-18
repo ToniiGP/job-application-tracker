@@ -30,6 +30,12 @@ def register_user(
             status_code=409,
             detail="A user with this email already exists.",
         )
+    
+    except user_service.UsernameAlreadyExistsError:
+        raise HTTPException(
+            status_code=409,
+            detail="A user with this username already exists.",
+        )
 
 
 @router.get("/me", response_model=UserResponse)

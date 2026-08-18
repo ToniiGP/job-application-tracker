@@ -10,6 +10,12 @@ class UserAlreadyExistsError(Exception):
     def __init__(self):
         super().__init__("A user with this email already exists.")
         self.name = "UserAlreadyExistsError"
+
+
+class UsernameAlreadyExistsError(Exception):
+    def __init__(self):
+        super().__init__("A user with this username already exists.")
+        self.name = "UsernameAlreadyExistsError"
         
 
 def authenticate_user(
@@ -46,6 +52,17 @@ def get_user_by_email(
     result = db.execute(statement)
     return result.scalars().first()
 
+def get_user_by_username(
+    db: Session, 
+    username: str, 
+) -> User | None:
+    
+    statement = select(User)
+    statement = statement.where(User.username == username)
+    
+    result = db.execute(statement)
+    return result.scalars().first()
+
 
 def create_user(
     db: Session, 
@@ -60,6 +77,13 @@ def create_user(
     if existing_user is not None:
         raise UserAlreadyExistsError()
     
+    existing_username = get_user_by_username(
+    db,
+    user_data.username,
+    )
+
+    if existing_username is not None:
+        raise UsernameAlreadyExistsError()
     
     hashed_password = hash_password(user_data.password)
 
