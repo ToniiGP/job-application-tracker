@@ -54,3 +54,33 @@ class User(Base):
             default=datetime.utcnow,
             nullable=False,
         )
+    
+class Interview(Base): 
+     __tablename__ = "interviews"
+     
+     id: Mapped[int] = mapped_column(primary_key=True)
+     application_id: Mapped[int] = mapped_column(ForeignKey("applications.id", ondelte="CASCADE"), nullable=False)
+     stage: Mapped[str] = mapped_column(String(50), nullable=False)
+     
+     scheduled_at: Mapped[datetime | None] = mapped_column(
+        DateTime,
+        nullable=True,
+    )
+
+     interviewer: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+     notes: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+     created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+     
+     
