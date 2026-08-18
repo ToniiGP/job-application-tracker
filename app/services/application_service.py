@@ -5,12 +5,17 @@ from sqlalchemy.orm import Session
 from app.models import Application
 from app.schemas import ApplicationCreate, ApplicationUpdate, ApplicationStatus
 
+
 def create_application(
     db: Session,
     application_data: ApplicationCreate,
+    user_id: int,
 ) -> Application:
     
-    application = Application(**application_data.model_dump())
+    application = Application(
+        **application_data.model_dump(),
+        user_id=user_id,
+        )
     
     db.add(application)
     db.commit()
@@ -20,6 +25,7 @@ def create_application(
 
 def get_applications(
     db: Session,
+    user_id: int,
     status: ApplicationStatus | None = None,
     company: str | None = None, 
     job_title: str | None = None,
@@ -27,7 +33,9 @@ def get_applications(
     page_size: int = 20, 
 ) -> list[Application]:
     
-    statement = select(Application)
+    statement = select(Application).where(
+    Application.user_id == user_id
+    )
 
     if status is not None:
         statement = statement.where(
@@ -59,17 +67,32 @@ def get_applications(
 def get_application(
     db: Session,
     application_id: int,
+    user_id: int, 
 ) -> Application | None:
     
-    application = db.get(Application, application_id)
-    return application
+    statement = select(Application).where(
+    Application.id == application_id,
+    Application.user_id == user_id,
+    )
+
+    result = db.execute(statement)
+
+    return result.scalars().first()
+
 
 def delete_application(
     db: Session,
     application_id: int,
+    user_id: int, 
 ) -> bool:
     
-    application = db.get(Application, application_id)
+    statement = select(Application).where(
+    Application.id == application_id,
+    Application.user_id == user_id,
+    )
+
+    result = db.execute(statement)
+    application = result.scalars().first()
     
     if application is None:
         return False
@@ -82,10 +105,17 @@ def delete_application(
 def update_application(
     db: Session,
     application_id: int,
+    user_id: int,
     application_data: ApplicationUpdate,
 ) -> Application | None:
 
-    application = db.get(Application, application_id)
+    statement = select(Application).where(
+    Application.id == application_id,
+    Application.user_id == user_id,
+)
+
+    result = db.execute(statement)
+    application = result.scalars().first()
 
     if application is None:
         return None

@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from enum import Enum
 
-from sqlalchemy import Date, DateTime, Enum as SQLEnum, String, Text
+from sqlalchemy import Date, DateTime, Enum as SQLEnum, String, Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -23,6 +23,9 @@ class Application(Base):
     __tablename__ = "applications"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+    ForeignKey("users.id", ondelete="CASCADE"),
+    nullable=False,)
     company_name: Mapped[str] = mapped_column(String(100), nullable=False)
     job_title: Mapped[str] = mapped_column(String(100), nullable=False)
     status: Mapped[ApplicationStatus] = mapped_column(
@@ -39,3 +42,15 @@ class Application(Base):
         default=datetime.utcnow,
         nullable=False,
     )
+    
+class User(Base): 
+    __tablename__ = "users"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+            DateTime,
+            default=datetime.utcnow,
+            nullable=False,
+        )
