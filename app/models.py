@@ -18,6 +18,13 @@ class ApplicationStatus(str, Enum):
     REJECTED = "Rejected"
     WITHDRAWN = "Withdrawn"
 
+class InterviewStage(str, Enum):
+    RECRUITER_SCREEN = "Recruiter Screen"
+    PHONE_SCREEN = "Phone Screen"
+    TECHNICAL_INTERVIEW = "Technical Interview"
+    ONSITE = "Onsite"
+    FINAL_INTERVIEW = "Final Interview"
+    OFFER_DISCUSSION = "Offer Discussion"
 
 class Application(Base):
     __tablename__ = "applications"
@@ -60,7 +67,7 @@ class Interview(Base):
      
      id: Mapped[int] = mapped_column(primary_key=True)
      application_id: Mapped[int] = mapped_column(ForeignKey("applications.id", ondelte="CASCADE"), nullable=False)
-     stage: Mapped[str] = mapped_column(String(50), nullable=False)
+     stage: Mapped[InterviewStage] = mapped_column(SQLEnum(InterviewStage), nullable=False)
      
      scheduled_at: Mapped[datetime | None] = mapped_column(
         DateTime,
