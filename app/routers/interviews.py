@@ -38,3 +38,33 @@ def create_interview(
         )
         
     return interview 
+
+@router.get(
+    "/applications/{application_id}/interviews", 
+    response_model=list[InterviewResponse]
+)
+def get_interviews(
+    application_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db), 
+): 
+    return interview_service.get_interviews(db, application_id, current_user.id)
+
+@router.get(
+    "/interviews/{interview_id}",
+    response_model=InterviewResponse
+)
+def get_interview(
+    application_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+): 
+    interview = interview_service.get_interview(db, application_id, current_user.id)
+    
+    if interview is None: 
+            raise HTTPException(
+                status_code=404
+                detail="Application not found",
+            )
+            
+    return interview 
