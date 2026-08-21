@@ -2,7 +2,7 @@ from datetime import date, datetime
 
 from pydantic import BaseModel, ConfigDict
 
-from app.models import ApplicationStatus
+from app.models import ApplicationStatus, InterviewStage
 
 
 class ApplicationCreate(BaseModel):
@@ -57,4 +57,24 @@ class UserLogin(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str
-    
+
+class InterviewCreate(BaseModel): 
+    stage: InterviewStage
+    scheduled_at: datetime | None = None 
+    interviewer: str | None = None 
+    notes: str | None = None 
+
+class InterviewResponse(BaseModel): 
+    id: int 
+    application_id: int
+    stage: InterviewStage
+    scheduled_at: datetime | None = None 
+    interviewer: str | None = None 
+    notes: str | None = None
+    created_at: datetime
+
+class InterviewUpdate(BaseModel): 
+    stage: InterviewStage | None = None
+    scheduled_at: datetime | None = None 
+    interviewer: str | None = None 
+    notes: str | None = None 

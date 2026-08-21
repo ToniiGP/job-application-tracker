@@ -18,6 +18,13 @@ class ApplicationStatus(str, Enum):
     REJECTED = "Rejected"
     WITHDRAWN = "Withdrawn"
 
+class InterviewStage(str, Enum):
+    RECRUITER_SCREEN = "Recruiter Screen"
+    PHONE_SCREEN = "Phone Screen"
+    TECHNICAL_INTERVIEW = "Technical Interview"
+    ONSITE = "Onsite"
+    FINAL_INTERVIEW = "Final Interview"
+    OFFER_DISCUSSION = "Offer Discussion"
 
 class Application(Base):
     __tablename__ = "applications"
@@ -54,3 +61,33 @@ class User(Base):
             default=datetime.utcnow,
             nullable=False,
         )
+    
+class Interview(Base): 
+     __tablename__ = "interviews"
+     
+     id: Mapped[int] = mapped_column(primary_key=True)
+     application_id: Mapped[int] = mapped_column(ForeignKey("applications.id", ondelete="CASCADE"), nullable=False)
+     stage: Mapped[InterviewStage] = mapped_column(SQLEnum(InterviewStage), nullable=False)
+     
+     scheduled_at: Mapped[datetime | None] = mapped_column(
+        DateTime,
+        nullable=True,
+    )
+
+     interviewer: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+     notes: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+     created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+     
+     
