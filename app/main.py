@@ -5,6 +5,7 @@ from app.database import create_database
 from app.routers.applications import router as applications_router
 from app.routers.users import router as users_router
 from app.routers.auth import router as auth_router
+from app.routers.interviews import router as interviews_router
 
 app = FastAPI(
     title="Job Application Tracker API",
@@ -17,6 +18,7 @@ create_database()
 app.include_router(applications_router)
 app.include_router(users_router)
 app.include_router(auth_router)
+app.include_router(interviews_router)
 
 @app.get("/")
 def read_root() -> dict[str, str]: 

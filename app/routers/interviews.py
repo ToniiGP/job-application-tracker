@@ -46,7 +46,19 @@ def get_interviews(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db), 
 ): 
-    return interview_service.get_interviews(db, application_id, current_user.id)
+    interviews = interview_service.get_interviews(
+        db, 
+        application_id, 
+        current_user.id
+    )
+    
+    if interviews is None: 
+        raise HTTPException(
+            status_code=404, 
+            detail="Application not found",
+        )
+    
+    return interviews
 
 @router.get(
     "/interviews/{interview_id}",

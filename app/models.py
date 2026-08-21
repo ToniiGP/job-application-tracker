@@ -66,7 +66,7 @@ class Interview(Base):
      __tablename__ = "interviews"
      
      id: Mapped[int] = mapped_column(primary_key=True)
-     application_id: Mapped[int] = mapped_column(ForeignKey("applications.id", ondelte="CASCADE"), nullable=False)
+     application_id: Mapped[int] = mapped_column(ForeignKey("applications.id", ondelete="CASCADE"), nullable=False)
      stage: Mapped[InterviewStage] = mapped_column(SQLEnum(InterviewStage), nullable=False)
      
      scheduled_at: Mapped[datetime | None] = mapped_column(

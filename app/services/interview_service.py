@@ -37,7 +37,7 @@ def get_interviews(
     db: Session,
     application_id: int,
     user_id: int,
-) -> list[Interview]:
+) -> list[Interview] | None:
     
     application = get_application(
         db,
@@ -46,7 +46,7 @@ def get_interviews(
     )
 
     if application is None:
-        return []
+        return None
     
     statement = select(Interview).where(
         Interview.application_id == application_id
