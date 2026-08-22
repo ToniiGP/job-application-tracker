@@ -87,3 +87,7 @@ class StatisticsSummary(BaseModel):
     offers: int 
     rejected: int 
     total_interviews: int 
+    
+class ApplicationsOverTime(BaseModel):
+    month: str
+    count: int

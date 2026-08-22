@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from app.schemas import StatisticsSummary
+from app.schemas import StatisticsSummary, ApplicationsOverTime
 from sqlalchemy import func, select
 from app.models import Application, ApplicationStatus, Interview
 
@@ -65,3 +65,36 @@ def get_statistics_summary(
         rejected=rejected,
         total_interviews=total_interviews,
     )
+    
+def get_statistics_over_time(
+    db: Session,
+    user_id: int,
+) -> list[ApplicationsOverTime]:
+
+    month = func.date_trunc(
+        "month",
+        Application.date_applied,
+    )
+
+    statement = (
+        select(
+            month,
+            func.count(Application.id),
+        )
+        .where(
+            Application.user_id == user_id,
+            Application.date_applied.is_not(None),
+        )
+        .group_by(month)
+        .order_by(month)
+    )
+
+    result = db.execute(statement).all()
+
+    return [
+        ApplicationsOverTime(
+            month=month_value.strftime("%Y-%m"),
+            count=count,
+        )
+        for month_value, count in result
+    ]
