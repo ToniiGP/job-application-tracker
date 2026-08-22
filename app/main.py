@@ -6,6 +6,7 @@ from app.routers.applications import router as applications_router
 from app.routers.users import router as users_router
 from app.routers.auth import router as auth_router
 from app.routers.interviews import router as interviews_router
+from app.routers.statistics import router as statistics_router
 
 app = FastAPI(
     title="Job Application Tracker API",
@@ -19,6 +20,7 @@ app.include_router(applications_router)
 app.include_router(users_router)
 app.include_router(auth_router)
 app.include_router(interviews_router)
+app.include_router(statistics_router)
 
 @app.get("/")
 def read_root() -> dict[str, str]: 
