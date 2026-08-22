@@ -78,3 +78,12 @@ class InterviewUpdate(BaseModel):
     scheduled_at: datetime | None = None 
     interviewer: str | None = None 
     notes: str | None = None 
+    
+class StatisticsSummary(BaseModel): 
+    total_applications: int 
+    wishlist: int 
+    applied: int 
+    interviewing: int 
+    offers: int 
+    rejected: int 
+    total_interviews: int 
