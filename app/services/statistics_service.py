@@ -33,7 +33,11 @@ def get_statistics_summary(
     
     wishlist = counts.get(ApplicationStatus.WISHLIST, 0)
     applied = counts.get(ApplicationStatus.APPLIED, 0)
-    interviewing = counts.get(ApplicationStatus.INTERVIEWING, 0)
+    interviewing = (
+        counts.get(ApplicationStatus.PHONE_SCREEN, 0)
+        + counts.get(ApplicationStatus.TECHNICAL_INTERVIEW, 0)
+        + counts.get(ApplicationStatus.FINAL_INTERVIEW, 0)
+    )
     offers = counts.get(ApplicationStatus.OFFER, 0)
     rejected = counts.get(ApplicationStatus.REJECTED, 0)
     
