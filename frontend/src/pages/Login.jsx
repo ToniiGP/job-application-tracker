@@ -4,12 +4,34 @@ function Login()
 {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [error, setError] = useState("")
 
-    function handleSubmit(event){
+    async function handleSubmit(event){
         event.preventDefault()
 
-        console.log("Email:", email)
-        console.log("Password:", password)
+        const formData = new URLSearchParams()
+
+        formData.append("username", email)
+        formData.append("password", password)
+
+        const response = await fetch("http://localhost:8000/auth/login", {
+            method: "POST", 
+            headers: {
+                "Content-Type" : "application/x-www-form-urlencoded",
+            }, 
+            body: formData, 
+        })
+
+        const data = await response.json()
+
+        if(response.ok){
+            localStorage.setItem("token", data.access_token)
+            setError("")
+            console.log("Login successful")
+        } else{
+            setError("Invalid email or password")
+        }
+        
     }
     return(
         <div>
@@ -42,6 +64,8 @@ function Login()
                     />
 
                 </div>
+
+                {error && <p>{error}</p>}
 
                 <button type="submit">
                     Login
