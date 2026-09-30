@@ -1,10 +1,12 @@
 import {useState} from "react"
+import { Link, useNavigate } from "react-router-dom"
 
 function Login()
 {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
+    const navigate = useNavigate()
 
     async function handleSubmit(event){
         event.preventDefault()
@@ -27,7 +29,7 @@ function Login()
         if(response.ok){
             localStorage.setItem("token", data.access_token)
             setError("")
-            console.log("Login successful")
+            navigate("/dashboard")
         } else{
             setError("Invalid email or password")
         }
@@ -73,6 +75,10 @@ function Login()
                     Login
                 </button>
             </form>
+
+            <p>
+                Don't have an account? <Link to="/register">Register</Link>
+            </p>
 
         </div>
     )

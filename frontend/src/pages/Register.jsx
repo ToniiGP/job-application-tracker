@@ -1,4 +1,5 @@
 import {useState} from "react"
+import { Link } from "react-router-dom"
 
 function Register()
 {
@@ -83,6 +84,11 @@ function Register()
                     Register
                 </button>
             </form>
+
+            <p>
+                Already have an account? <Link to="/login">Login</Link>
+            </p>
+            
         </div>
     )
 
