@@ -53,6 +53,7 @@ function Dashboard() {
       {applications.map((application) => (
         <ApplicationCard
           key={application.id}
+          id={application.id}
           company={application.company_name}
           jobTitle={application.job_title}
           status={application.status}
